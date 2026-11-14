@@ -111,7 +111,17 @@
   .foot .notice{ margin:0; text-shadow:0 1px 3px rgba(0,0,0,0.70); word-break:keep-all; flex:1 1 280px; }
   .foot .copyright{ margin:0; text-shadow:0 1px 3px rgba(0,0,0,0.70); text-align:right; margin-left:auto; white-space:nowrap; }
 
-  @media (max-width:560px){ .foot .copyright{ white-space:normal; } }
+  /* 폰(좁은 화면): 좌우를 꽉 채움 */
+  @media (max-width:600px){
+    .page{ padding:8px 5px 10px; }
+    .top{ max-width:none; display:block; }
+    main{ grid-template-columns:100%; min-width:0; width:100% !important; max-width:100%; justify-content:stretch; }
+    .search .pick{ gap:4px 6px; }
+    .search label{ flex:1 1 40%; }
+    .search select{ flex:1; max-width:none; min-width:0; }
+    .foot{ padding-left:2px; padding-right:2px; }
+    .foot .copyright{ white-space:normal; }
+  }
 
   /* 인쇄: 검색 조작부는 숨기고 모든 링크를 보여줌 */
   @media print{
@@ -120,7 +130,6 @@
     .hide{ display:flex !important; }
     .sub.hide,.panel.hide{ display:block !important; }
     a.link.hide{ display:inline-block !important; }
-    .empty{ display:none !important; }
     .page{ min-height:auto; }
     .panel,a.link{ box-shadow:none !important; }
   }
@@ -415,7 +424,7 @@ function start(raw){
   fillS2();
   apply();
   /* 검색해도 화면 폭이 출렁이지 않도록, 처음 모든 항목이 보일 때의 폭을 고정 */
-  function lockWidth(){ root.style.width = ""; root.style.width = root.offsetWidth + "px"; }
+  function lockWidth(){ root.style.width = ""; if (window.innerWidth <= 600) return; root.style.width = root.offsetWidth + "px"; }
   lockWidth();
   if (!wired) { wired = true; window.addEventListener("resize", lockWidth); }
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(lockWidth);
