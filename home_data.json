@@ -2,28 +2,28 @@
  "updated": "2026-11-14",
  "title": "Home Sweet Home",
  "footer": {
-  "notice": "※ 고객상담시에는 반드시 시스템을 확인하시기 바랍니다."
+  "notice": "-"
  },
  "bg": {
   "mode": "gradient",
   "type": "linear",
-  "angle": 160,
-  "c1": "#0f3358",
-  "c2": "#35597f",
-  "c3": "#8a6d2f",
-  "useC3": false
+  "angle": 135,
+  "c1": "#0b2547",
+  "c2": "#2c4a78",
+  "c3": "#b8913a",
+  "useC3": true
  },
  "fonts": {
   "title": {
    "family": "맑은 고딕",
-   "size": 34,
+   "size": 28.5,
    "color": "#ffffff",
    "weight": "800",
    "underline": false
   },
   "sec": {
    "family": "맑은 고딕",
-   "size": 16,
+   "size": 13.5,
    "color": "#071d3a",
    "weight": "800",
    "underline": false
@@ -53,21 +53,21 @@
  "btn": {
   "L": {
    "family": "맑은 고딕",
-   "size": 15,
+   "size": 12,
    "color": "#ffffff",
-   "weight": "800",
+   "weight": "700",
    "underline": false
   },
   "M": {
    "family": "맑은 고딕",
-   "size": 13,
+   "size": 12,
    "color": "#ffffff",
    "weight": "700",
    "underline": false
   },
   "S": {
    "family": "맑은 고딕",
-   "size": 11.5,
+   "size": 12,
    "color": "#ffffff",
    "weight": "700",
    "underline": false
