@@ -113,7 +113,7 @@
   .foot{ margin-top:auto; padding-top:10px; display:flex; justify-content:flex-end; }
   .foot .copyright{ margin:0; font-size:12px; font-weight:700; color:#fff; text-shadow:0 1px 3px rgba(0,0,0,0.8); text-align:right; }
 
-  @media (max-width:760px){
+  @media (max-width:900px){
     input[type=text],input[type=password],input[type=number],select{ font-size:16px; }
     .grid{ grid-template-columns:1fr 1fr; }
     .lk{ grid-template-columns:1fr; }
@@ -333,7 +333,7 @@ function buildCss(d){
   var f = d.fonts, c = "";
   c += "body{background:" + (d.bg.mode === "solid" ? d.bg.c1 : d.bg.c1) + ";}\n";
   c += ".bg{background:" + bgCss(d.bg) + " !important;}\n";
-  c += ".ttl{" + fmtCss(f.title) + "}\n";
+  c += ".ttl{" + fmtCss(f.title) + "font-size:min(" + f.title.size + "px,9.5vw);}\n";
   c += ".section h2{" + fmtCss(f.sec) + "-webkit-text-stroke:0;}\n";
   c += ".sub h3{" + fmtCss(f.grp) + "}\n";
   c += ".search label,.search .count,.search select,.search button.reset,.empty{" + fmtCss(f.body) + "}\n";

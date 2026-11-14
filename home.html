@@ -111,14 +111,16 @@
   .foot .notice{ margin:0; text-shadow:0 1px 3px rgba(0,0,0,0.70); word-break:keep-all; flex:1 1 280px; }
   .foot .copyright{ margin:0; text-shadow:0 1px 3px rgba(0,0,0,0.70); text-align:right; margin-left:auto; white-space:nowrap; }
 
-  /* 폰(좁은 화면): 좌우를 꽉 채움 */
-  @media (max-width:600px){
+  /* 화면 폭에 맞춰 늘어남: 폰·태블릿(900px 이하)은 기기 폭을 가득 채움 (고정 폭 없음) */
+  html{ -webkit-text-size-adjust:100%; text-size-adjust:100%; }
+  @media (max-width:900px){
     .page{ padding:8px 5px 10px; }
     .top{ max-width:none; display:block; }
     main{ grid-template-columns:100%; min-width:0; width:100% !important; max-width:100%; justify-content:stretch; }
     .search .pick{ gap:4px 6px; }
     .search label{ flex:1 1 40%; }
     .search select{ flex:1; max-width:none; min-width:0; }
+    a.link{ white-space:normal; max-width:100%; word-break:keep-all; overflow-wrap:anywhere; }
     .foot{ padding-left:2px; padding-right:2px; }
     .foot .copyright{ white-space:normal; }
   }
@@ -255,7 +257,7 @@ function buildCss(d){
   var f = d.fonts, c = "";
   c += "body{background:" + (d.bg.mode === "solid" ? d.bg.c1 : d.bg.c1) + ";}\n";
   c += ".bg{background:" + bgCss(d.bg) + " !important;}\n";
-  c += ".ttl{" + fmtCss(f.title) + "}\n";
+  c += ".ttl{" + fmtCss(f.title) + "font-size:min(" + f.title.size + "px,9.5vw);}\n";
   c += ".section h2{" + fmtCss(f.sec) + "-webkit-text-stroke:0;}\n";
   c += ".sub h3{" + fmtCss(f.grp) + "}\n";
   c += ".search label,.search .count,.search select,.search button.reset,.empty{" + fmtCss(f.body) + "}\n";
@@ -424,7 +426,7 @@ function start(raw){
   fillS2();
   apply();
   /* 검색해도 화면 폭이 출렁이지 않도록, 처음 모든 항목이 보일 때의 폭을 고정 */
-  function lockWidth(){ root.style.width = ""; if (window.innerWidth <= 600) return; root.style.width = root.offsetWidth + "px"; }
+  function lockWidth(){ root.style.width = ""; if (window.innerWidth <= 900) return; root.style.width = root.offsetWidth + "px"; }
   lockWidth();
   if (!wired) { wired = true; window.addEventListener("resize", lockWidth); }
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(lockWidth);
