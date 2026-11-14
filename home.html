@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Home Sweet Home</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Nanum+Myeongjo:wght@400;700;800&family=Jua&family=Gamja+Flower&display=swap" rel="stylesheet">
+<style>
+  :root{ --text:#10243a; }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    min-height:100vh; min-height:100dvh;
+    background:#0f3358; color:var(--text);
+    font-family:"Malgun Gothic","Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+    font-size:12px; line-height:1.35;
+  }
+  /* 배경: 관리화면에서 정한 단색/그라데이션 (아래 #dyn 스타일이 덮어씀) */
+  .bg{ position:fixed; top:0;right:0;bottom:0;left:0; z-index:0; pointer-events:none;
+       background:linear-gradient(160deg,#0f3358,#35597f);
+       -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+
+  .page{ position:relative; z-index:1; display:flex; flex-direction:column; min-height:100vh; min-height:100dvh;
+         width:100%; margin:0 auto; padding:18px 14px 12px; }
+  .top{ align-self:center; width:100%; max-width:820px; display:flex; justify-content:center; }
+
+  main{ display:grid; grid-template-columns:fit-content(100%); justify-content:center; row-gap:7px; max-width:100%; min-width:min(100%,360px); }
+
+  /* 제목: 검색영역 위 가운데 */
+  .ttl{ margin:0 0 4px; padding:0 6px; text-align:center; line-height:1.15; word-break:keep-all;
+        text-shadow:0 2px 4px rgba(0,0,0,0.45); -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+
+  .panel{
+    display:block; margin:0; padding:4px 7px 6px;
+    background:linear-gradient(180deg,rgba(226,241,255,0.92) 0%,rgba(200,226,252,0.88) 50%,rgba(174,208,246,0.86) 100%);
+    border:1px solid #1f4f86; border-top-color:#f2f9ff; border-radius:6px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.9),inset 0 -2px 0 rgba(60,90,130,0.22),0 2px 0 #1a4476,0 6px 11px rgba(3,18,45,0.55);
+    -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  }
+  .section h2{ margin:0 0 4px; letter-spacing:-0.2px; }
+  .links{ display:flex; flex-wrap:wrap; gap:5px; }
+  .lrows{ display:flex; flex-direction:column; gap:5px; }
+  a.link{
+    display:inline-block; border:1px solid #3a0a18; border-radius:5px;
+    background:linear-gradient(180deg,rgba(255,255,255,0.30) 0%,rgba(255,255,255,0.08) 48%,rgba(255,255,255,0) 52%),
+               linear-gradient(115deg,#c0566f 0%,#8c2c47 38%,#611a2f 70%,#3f0f1e 100%);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.38),inset 0 -1px 0 rgba(0,0,0,0.25),0 1px 0 #3a0a18,0 3px 5px rgba(50,8,22,0.45);
+    text-shadow:0 1px 1px rgba(0,0,0,0.45); white-space:nowrap; line-height:1.2;
+    transition:transform .08s ease, box-shadow .08s ease, background .12s ease;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  }
+  a.link:hover,a.link:focus{
+    background:linear-gradient(180deg,#2f6aa3 0%,#1a4f86 55%,#123c68 100%); border-color:#0b2744; outline:none;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.3),0 1px 0 #0b2744,0 3px 6px rgba(6,28,56,0.45);
+  }
+  a.link:active{ transform:translateY(1px); box-shadow:inset 0 2px 3px rgba(0,0,0,0.35),0 0 0 #0b2744; }
+  a.link.pinned{
+    border-color:#06301d;
+    background:linear-gradient(180deg,rgba(255,255,255,0.32) 0%,rgba(255,255,255,0.08) 48%,rgba(255,255,255,0) 52%),
+               linear-gradient(115deg,#34a56f 0%,#1f7a4f 40%,#14573a 75%,#0c3d27 100%);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.4),inset 0 -1px 0 rgba(0,0,0,0.25),0 1px 0 #06301d,0 3px 5px rgba(4,40,24,0.45);
+  }
+  a.link.pinned::before{ content:"★"; margin-right:3px; color:#ffe38a; text-decoration:none; display:inline-block; }
+  a.link.pinned:hover,a.link.pinned:focus{ background:linear-gradient(180deg,#2f6aa3 0%,#1a4f86 55%,#123c68 100%); border-color:#0b2744; }
+
+  /* 검색 영역 */
+  .search{ display:grid; gap:4px; padding-top:5px; padding-bottom:5px; }
+  .search .kw{
+    width:100%; min-width:0; line-height:1.2; padding:4px 9px; color:#071d3a;
+    background:rgba(255,255,255,0.94); border:1px solid #6f87a3; border-radius:5px;
+    box-shadow:inset 0 2px 3px rgba(10,30,60,0.22),0 1px 0 rgba(255,255,255,0.9);
+    outline:none; -webkit-appearance:none; appearance:none;
+  }
+  .search .kw::placeholder{ color:#5b6f86; }
+  .search .kw:focus{ border-color:#74223a; box-shadow:inset 0 2px 3px rgba(10,30,60,0.22),0 0 0 2px rgba(116,34,58,0.35); }
+  .search .pick{ display:flex; flex-wrap:wrap; gap:4px 8px; align-items:center; }
+  .search label{ display:flex; align-items:center; gap:4px; }
+  .search select{
+    line-height:1.2; padding:1px 4px; max-width:170px; color:#071d3a;
+    background:linear-gradient(180deg,#ffffff 0%,#dfe9f4 100%);
+    border:1px solid #6f87a3; border-bottom-color:#3f648d; border-radius:5px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.95),0 1px 0 #3f648d,0 2px 4px rgba(8,36,70,0.28); outline:none;
+  }
+  .search select:focus{ border-color:#74223a; }
+  .search button.reset{
+    padding:1px 9px; color:#fff !important; background:linear-gradient(115deg,#8c2c47 0%,#611a2f 70%,#3f0f1e 100%);
+    border:1px solid #3a0a18; border-radius:5px; cursor:pointer;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.3),0 1px 0 #3a0a18,0 2px 4px rgba(50,8,22,0.4);
+    text-shadow:0 1px 1px rgba(0,0,0,0.45); -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  }
+  .search button.reset:active{ transform:translateY(1px); }
+  .search .count{ margin-left:auto; }
+  .empty{ margin:0; }
+  .hide{ display:none !important; }
+
+  /* 중분류: 금색 이름표 + 버튼 묶음 */
+  .sub{ margin:5px 0 0; padding-top:5px; border-top:1px solid rgba(95,125,160,0.38); }
+  .sub:first-of-type{ margin-top:2px; }
+  .sub h3{
+    display:inline-block; margin:0 0 4px; padding:1px 8px 1px 6px; letter-spacing:-0.1px;
+    background:linear-gradient(180deg,#fffdf0 0%,#fff0b8 55%,#ffe38a 100%);
+    border:1px solid #c9a23c; border-left:4px solid #74223a; border-radius:4px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.95),0 1px 0 #a98524,0 2px 3px rgba(60,40,5,0.28);
+    -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  }
+
+  /* 하단: 안내문(왼쪽) · 저작권(항상 오른쪽 아래) */
+  .foot{ margin-top:auto; padding-top:16px; display:flex; flex-wrap:wrap; gap:2px 14px; align-items:flex-end; justify-content:space-between; }
+  .foot .notice{ margin:0; text-shadow:0 1px 3px rgba(0,0,0,0.70); word-break:keep-all; flex:1 1 280px; }
+  .foot .copyright{ margin:0; text-shadow:0 1px 3px rgba(0,0,0,0.70); text-align:right; margin-left:auto; white-space:nowrap; }
+
+  @media (max-width:560px){ .foot .copyright{ white-space:normal; } }
+
+  /* 인쇄: 검색 조작부는 숨기고 모든 링크를 보여줌 */
+  @media print{
+    @page{ size:A4; margin:10mm; }
+    .search{ display:none !important; }
+    .hide{ display:flex !important; }
+    .sub.hide,.panel.hide{ display:block !important; }
+    a.link.hide{ display:inline-block !important; }
+    .empty{ display:none !important; }
+    .page{ min-height:auto; }
+    .panel,a.link{ box-shadow:none !important; }
+  }
+</style>
+<style id="dyn"></style>
+</head>
+<body>
+
+<div class="bg" aria-hidden="true"></div>
+
+<div class="page">
+  <div class="top">
+    <main id="gate"></main>
+  </div>
+  <noscript>자바스크립트를 켜야 메뉴가 표시됩니다.</noscript>
+
+  <footer class="foot">
+    <p class="notice" id="fNotice"></p>
+    <p class="copyright" id="fCopy"></p>
+  </footer>
+</div>
+
+<script>
+/* ===== 공통(보기·관리 페이지 동일): 글꼴 목록, 기본값, 데이터 보정, CSS 생성 ===== */
+var FONTS = [
+  ["맑은 고딕", '"Malgun Gothic","Apple SD Gothic Neo","Noto Sans KR",sans-serif'],
+  ["나눔고딕", '"Nanum Gothic","Malgun Gothic",sans-serif'],
+  ["Noto Sans KR", '"Noto Sans KR","Malgun Gothic",sans-serif'],
+  ["돋움", '"Dotum","Malgun Gothic",sans-serif'],
+  ["굴림", '"Gulim","Malgun Gothic",sans-serif'],
+  ["나눔명조", '"Nanum Myeongjo","Batang",serif'],
+  ["바탕", '"Batang","Nanum Myeongjo",serif'],
+  ["궁서", '"Gungsuh","Nanum Myeongjo",serif'],
+  ["주아체", '"Jua","Malgun Gothic",sans-serif'],
+  ["감자꽃", '"Gamja Flower","Malgun Gothic",sans-serif'],
+  ["Arial", 'Arial,"Malgun Gothic",sans-serif'],
+  ["Verdana", 'Verdana,"Malgun Gothic",sans-serif'],
+  ["Tahoma", 'Tahoma,"Malgun Gothic",sans-serif'],
+  ["Trebuchet MS", '"Trebuchet MS","Malgun Gothic",sans-serif'],
+  ["Georgia", 'Georgia,"Batang",serif'],
+  ["Times New Roman", '"Times New Roman","Batang",serif'],
+  ["Courier New", '"Courier New","Malgun Gothic",monospace']
+];
+var WEIGHTS = [["300","가늘게"],["400","보통"],["500","중간"],["700","굵게"],["800","매우 굵게"],["900","가장 굵게"]];
+var SIZES = [["L","대"],["M","중"],["S","소"]];
+/* 글꼴 설정 대상(글자 종류) */
+var TARGETS = [
+  ["title","제목 (Home Sweet Home)"],
+  ["sec","항목명 · 대분류"],
+  ["grp","항목명 · 중분류"],
+  ["body","내용 (검색영역 글자)"],
+  ["foot","하단 문구 (안내문·저작권)"]
+];
+var DEF_FMT = {
+  title:{ family:"맑은 고딕", size:34, color:"#ffffff", weight:"800", underline:false },
+  sec:  { family:"맑은 고딕", size:16, color:"#071d3a", weight:"800", underline:false },
+  grp:  { family:"맑은 고딕", size:13, color:"#0b2547", weight:"800", underline:false },
+  body: { family:"맑은 고딕", size:12, color:"#0b2547", weight:"700", underline:false },
+  foot: { family:"맑은 고딕", size:12, color:"#ffffff", weight:"700", underline:false }
+};
+var DEF_BTN = {
+  L:{ family:"맑은 고딕", size:15, color:"#ffffff", weight:"800", underline:false },
+  M:{ family:"맑은 고딕", size:13, color:"#ffffff", weight:"700", underline:false },
+  S:{ family:"맑은 고딕", size:11.5, color:"#ffffff", weight:"700", underline:false }
+};
+var DEF_BG = { mode:"gradient", type:"linear", angle:160, c1:"#0f3358", c2:"#35597f", c3:"#8a6d2f", useC3:false };
+var DEF_NOTICE = "※ 고객상담시에는 반드시 시스템을 확인하시기 바랍니다.";
+var DEF_TITLE = "Home Sweet Home";
+
+function clone(o){ return JSON.parse(JSON.stringify(o)); }
+function fixFmt(f, d){
+  f = f || {};
+  var sz = Number(f.size);
+  return {
+    family: FONTS.some(function(x){ return x[0] === f.family; }) ? f.family : d.family,
+    size: (sz >= 8 && sz <= 80) ? sz : d.size,
+    color: /^#[0-9a-fA-F]{6}$/.test(f.color || "") ? f.color : d.color,
+    weight: WEIGHTS.some(function(x){ return x[0] === String(f.weight); }) ? String(f.weight) : d.weight,
+    underline: f.underline === undefined ? d.underline : !!f.underline
+  };
+}
+/* 어떤 형태의 데이터가 와도 기본값으로 채워서 돌려줌 */
+function normData(d){
+  d = d || {};
+  var o = { updated: d.updated || "", title: d.title || DEF_TITLE, footer: { notice: (d.footer && d.footer.notice) || DEF_NOTICE } };
+  var b = d.bg || {};
+  o.bg = {
+    mode: b.mode === "solid" ? "solid" : "gradient",
+    type: b.type === "radial" ? "radial" : "linear",
+    angle: isFinite(Number(b.angle)) ? Math.max(0, Math.min(360, Number(b.angle))) : DEF_BG.angle,
+    c1: /^#[0-9a-fA-F]{6}$/.test(b.c1 || "") ? b.c1 : DEF_BG.c1,
+    c2: /^#[0-9a-fA-F]{6}$/.test(b.c2 || "") ? b.c2 : DEF_BG.c2,
+    c3: /^#[0-9a-fA-F]{6}$/.test(b.c3 || "") ? b.c3 : DEF_BG.c3,
+    useC3: !!b.useC3
+  };
+  o.fonts = {}; TARGETS.forEach(function(t){ o.fonts[t[0]] = fixFmt((d.fonts || {})[t[0]], DEF_FMT[t[0]]); });
+  o.btn = {}; SIZES.forEach(function(s){ o.btn[s[0]] = fixFmt((d.btn || {})[s[0]], DEF_BTN[s[0]]); });
+  o.sections = (d.sections || []).map(function(s){
+    return { title: s.title || "", pin: !!s.pin, groups: (s.groups || []).map(function(g){
+      return { title: g.title || "", pin: !!g.pin, links: (g.links || []).map(function(l){
+        if (l.br) return { br: true, label: "", url: "", tags: [], pin: !!l.pin, size: "M", fmt: null };
+        var tg = Array.isArray(l.tags) ? l.tags : String(l.tags || "").split(/[\s,]+/).map(function(x){ return x.replace(/^#+/, ""); }).filter(Boolean);
+        return { label: l.label || "", url: l.url || "", tags: tg, pin: !!l.pin,
+                 size: (l.size === "L" || l.size === "S") ? l.size : "M",
+                 fmt: l.fmt ? fixFmt(l.fmt, DEF_BTN[(l.size === "L" || l.size === "S") ? l.size : "M"]) : null };
+      })};
+    })};
+  });
+  return o;
+}
+function fontStack(name){ for (var i = 0; i < FONTS.length; i++) if (FONTS[i][0] === name) return FONTS[i][1]; return FONTS[0][1]; }
+function fmtCss(f){
+  return "font-family:" + fontStack(f.family) + ";font-size:" + f.size + "px;color:" + f.color +
+         ";font-weight:" + f.weight + ";text-decoration:" + (f.underline ? "underline" : "none") + ";";
+}
+function bgCss(b){
+  if (b.mode === "solid") return b.c1;
+  var cols = b.c1 + "," + b.c2 + (b.useC3 ? "," + b.c3 : "");
+  return b.type === "radial" ? "radial-gradient(circle at 50% 30%," + cols + ")" : "linear-gradient(" + b.angle + "deg," + cols + ")";
+}
+/* 사용자가 정한 글꼴·배경을 CSS 로 만든다 (보기 페이지와 관리 미리보기 공통) */
+function buildCss(d){
+  var f = d.fonts, c = "";
+  c += "body{background:" + (d.bg.mode === "solid" ? d.bg.c1 : d.bg.c1) + ";}\n";
+  c += ".bg{background:" + bgCss(d.bg) + " !important;}\n";
+  c += ".ttl{" + fmtCss(f.title) + "}\n";
+  c += ".section h2{" + fmtCss(f.sec) + "-webkit-text-stroke:0;}\n";
+  c += ".sub h3{" + fmtCss(f.grp) + "}\n";
+  c += ".search label,.search .count,.search select,.search button.reset,.empty{" + fmtCss(f.body) + "}\n";
+  c += ".search .kw{font-family:" + fontStack(f.body.family) + ";font-size:max(16px," + f.body.size + "px);}\n";
+  c += ".search .count,.search label{text-decoration:none;}\n";
+  c += ".foot .notice,.foot .copyright{" + fmtCss(f.foot) + "}\n";
+  SIZES.forEach(function(s){
+    var b = d.btn[s[0]];
+    c += "a.link.sz" + s[0] + "{" + fmtCss(b) + "padding:" + (b.size * 0.24).toFixed(1) + "px " + (b.size * 0.7).toFixed(1) + "px;}\n";
+  });
+  return c;
+}
+
+
+/* ===== 데이터는 home_data.json 에 있습니다 =====
+   직접 고치지 말고 관리화면(home_admin.html)에서 수정·저장하세요.
+   표시 순서: 고정(★) 항목이 맨 앞 → 나머지는 관리화면에서 정한 순서 */
+var isEn = function(t){ return /^[A-Za-z0-9]/.test(String(t).trim()); };
+var norm = function(t){ return String(t).toLowerCase().replace(/\s+/g, ""); };
+var normQ = function(t){ return norm(t).replace(/^#+/, ""); };
+function ordered(list){
+  var pins = list.filter(function(x){ return x.pin; });
+  var rest = list.filter(function(x){ return !x.pin; });
+  return pins.concat(rest);
+}
+var root = document.getElementById("gate");
+var wired = false;
+
+/* 저작권 연도는 열어 보는 시점의 연도로 자동 표시 */
+function copyText(){ return "ⓒ" + new Date().getFullYear() + ". YOON HYUNCHUL, ALL RIGHTS RESERVED."; }
+
+function start(raw){
+  var data = normData(raw);
+  document.getElementById("dyn").textContent = buildCss(data);
+  document.title = data.title;
+  document.getElementById("fNotice").textContent = data.footer.notice;
+  document.getElementById("fCopy").textContent = copyText();
+
+  var model = [];
+  ordered(data.sections).forEach(function(sec){
+    var box = document.createElement("section");
+    box.className = "panel section";
+    var h = document.createElement("h2");
+    h.textContent = sec.title;
+    box.appendChild(h);
+    var secModel = { title: sec.title, box: box, subs: [] };
+
+    ordered(sec.groups).forEach(function(g){
+      var sub = document.createElement("div");
+      sub.className = "sub";
+      var h3 = document.createElement("h3");
+      h3.textContent = g.title;
+      sub.appendChild(h3);
+      var rows = document.createElement("div");
+      rows.className = "lrows";
+      var rowList = [], store = [], cur = null;
+      ordered(g.links).forEach(function(item){
+        if (item.br) { cur = null; return; }
+        if (!cur) {
+          var row = document.createElement("div");
+          row.className = "links";
+          rows.appendChild(row);
+          cur = { el: row, links: [] };
+          rowList.push(cur);
+        }
+        var a = document.createElement("a");
+        a.className = "link sz" + item.size + (item.pin ? " pinned" : "");
+        a.href = item.url;
+        a.target = "_blank";
+        a.rel = "noopener";
+        a.textContent = item.label;
+        if (item.fmt) {   /* 링크별 개별 서식 */
+          a.style.cssText = fmtCss(item.fmt) + "padding:" + (item.fmt.size * 0.24).toFixed(1) + "px " + (item.fmt.size * 0.7).toFixed(1) + "px;";
+        }
+        if (item.tags && item.tags.length) a.title = item.tags.map(function(t){ return "#" + t; }).join(" ");
+        cur.el.appendChild(a);
+        var rec = { el: a, label: item.label, tags: (item.tags || []).map(normQ) };
+        cur.links.push(rec);
+        store.push(rec);
+      });
+      sub.appendChild(rows);
+      box.appendChild(sub);
+      secModel.subs.push({ title: g.title, el: sub, links: store, rows: rowList });
+    });
+    model.push(secModel);
+  });
+
+  /* ----- 제목 + 검색 영역 (맨 위) ----- */
+  var ttl = document.createElement("h1");
+  ttl.className = "ttl";
+  ttl.textContent = data.title;
+  var sp = document.createElement("section");
+  sp.className = "panel search";
+  sp.innerHTML =
+    '<input id="kw" class="kw" type="search" placeholder="키워드·#해시태그 검색 (예: 포털, #뉴스)" autocomplete="off" aria-label="키워드 검색">' +
+    '<div class="pick">' +
+      '<label>대분류 <select id="s1" aria-label="대분류"></select></label>' +
+      '<label>중분류 <select id="s2" aria-label="중분류"></select></label>' +
+      '<button id="rs" class="reset" type="button">초기화</button>' +
+      '<span id="cnt" class="count"></span>' +
+    '</div>';
+  root.innerHTML = "";
+  root.style.width = "";
+  root.appendChild(ttl);
+  root.appendChild(sp);
+  model.forEach(function(m){ root.appendChild(m.box); });
+
+  var empty = document.createElement("p");
+  empty.className = "panel empty hide";
+  empty.textContent = "검색 결과가 없습니다.";
+  root.appendChild(empty);
+
+  var kw = document.getElementById("kw"), s1 = document.getElementById("s1"), s2 = document.getElementById("s2"), cnt = document.getElementById("cnt");
+  function opt(v, t){ var o = document.createElement("option"); o.value = v; o.textContent = t; return o; }
+  s1.appendChild(opt("", "전체"));
+  model.forEach(function(m, i){ s1.appendChild(opt(String(i), m.title)); });
+
+  function fillS2(){
+    var prev = s2.value;
+    s2.innerHTML = "";
+    s2.appendChild(opt("", "전체"));
+    model.forEach(function(m, mi){
+      if (s1.value !== "" && Number(s1.value) !== mi) return;
+      m.subs.forEach(function(sub, si){ s2.appendChild(opt(mi + "|" + si, sub.title)); });
+    });
+    var ok = Array.prototype.some.call(s2.options, function(o){ return o.value === prev; });
+    s2.value = ok ? prev : "";
+  }
+
+  function apply(){
+    var q = normQ(kw.value), a = s1.value;
+    var bp = s2.value === "" ? null : s2.value.split("|").map(Number);
+    var shown = 0;
+    model.forEach(function(m, mi){
+      var secVisible = 0;
+      var secOk = (a === "" || Number(a) === mi) && (bp === null || bp[0] === mi);
+      m.subs.forEach(function(sub, si){
+        var subOk = secOk && (bp === null || bp[1] === si);
+        var subVisible = 0;
+        sub.links.forEach(function(l){
+          var ok = subOk;
+          if (ok && q !== "") ok = norm(l.label).indexOf(q) >= 0 || l.tags.some(function(t){ return t.indexOf(q) >= 0; });
+          l.el.classList.toggle("hide", !ok);
+          if (ok) subVisible++;
+        });
+        sub.rows.forEach(function(r){
+          r.el.classList.toggle("hide", !r.links.some(function(l){ return !l.el.classList.contains("hide"); }));
+        });
+        sub.el.classList.toggle("hide", subVisible === 0);
+        secVisible += subVisible;
+      });
+      m.box.classList.toggle("hide", secVisible === 0);
+      shown += secVisible;
+    });
+    empty.classList.toggle("hide", shown !== 0 || model.length === 0);
+    cnt.textContent = shown + "개";
+  }
+
+  kw.addEventListener("input", apply);
+  s1.addEventListener("change", function(){ fillS2(); apply(); });
+  s2.addEventListener("change", apply);
+  document.getElementById("rs").addEventListener("click", function(){
+    kw.value = ""; s1.value = ""; fillS2(); s2.value = ""; apply();
+  });
+
+  fillS2();
+  apply();
+  /* 검색해도 화면 폭이 출렁이지 않도록, 처음 모든 항목이 보일 때의 폭을 고정 */
+  function lockWidth(){ root.style.width = ""; root.style.width = root.offsetWidth + "px"; }
+  lockWidth();
+  if (!wired) { wired = true; window.addEventListener("resize", lockWidth); }
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(lockWidth);
+}
+
+var qs = location.search;
+var pv = null;
+if (/[?&]preview=1/.test(qs)) {
+  try { pv = JSON.parse(sessionStorage.getItem("home_preview") || "null"); } catch(e){ pv = null; }
+}
+if (/[?&]live=1/.test(qs)) {
+  /* 관리화면 안의 실시간 미리보기: 부모 창이 보내주는 데이터로 다시 그림 */
+  window.addEventListener("message", function(e){
+    if (e.source === window.parent && e.data && e.data.type === "home-preview") start(e.data.data);
+  });
+  try { window.parent.postMessage({ type: "home-ready" }, "*"); } catch(e){}
+} else if (pv) {
+  start(pv);
+} else if (window.HOME_DATA) {
+  start(window.HOME_DATA);
+} else {
+  fetch("home_data.json?t=" + Date.now(), { cache: "no-store" })
+    .then(function(r){ if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(start)
+    .catch(function(){ start({}); root.insertAdjacentHTML("beforeend", '<p class="panel empty">데이터를 불러오지 못했습니다. 잠시 후 새로고침 해주세요.</p>'); });
+}
+</script>
+<script id="popup-drag">
+/* popup-drag: 팝업(모달·dialog·플로팅 패널) 헤더 영역을 끌어 이동 (마우스·터치 공통) */
+(function () {
+  if (window.__popupDrag) return;
+  window.__popupDrag = 1;
+  var INTER = 'input,textarea,select,button,a,label,option,summary,[contenteditable],[role=button]';
+  var SKIP = /toast|copy|drawer|menu|tooltip|banner|navbar|fmtpanel|pd-skip/i;
+  var NAME = /pop|modal|dlg|dialog|panel|sheet|layer/i;
+  var moved = [], drag = null, lastDrag = 0, lastMove = 0;
+
+  var st = document.createElement('style');
+  st.textContent =
+    'html.pd-can *:not(input):not(textarea):not(select):not(button):not(a):not(label){cursor:move!important}' +
+    'html.pd-drag,html.pd-drag *{cursor:move!important;user-select:none!important;-webkit-user-select:none!important}';
+  (document.head || document.documentElement).appendChild(st);
+
+  function alpha(c) {
+    var m = /rgba?\(([^)]+)\)/.exec(c || '');
+    if (!m) return 0;
+    var p = m[1].split(',');
+    return p.length > 3 ? parseFloat(p[3]) : 1;
+  }
+  function nm(el) { return (el.id || '') + ' ' + (el.getAttribute('class') || ''); }
+
+  function findPanel(t) {
+    if (!t || !t.closest) return null;
+    var d = t.closest('dialog');
+    if (d) return d.open && !SKIP.test(nm(d)) ? d : null;
+    var prev = null, el = t, vw = innerWidth, vh = innerHeight;
+    while (el && el !== document.body && el !== document.documentElement) {
+      var cs = getComputedStyle(el);
+      if (cs.position === 'fixed') {
+        var r = el.getBoundingClientRect();
+        if (r.width >= vw * 0.9 && r.height >= vh * 0.9) {
+          if (!prev || SKIP.test(nm(el))) return null;
+          var ok = NAME.test(nm(el)) || el.getAttribute('role') === 'dialog' ||
+            el.getAttribute('aria-modal') === 'true' ||
+            (alpha(cs.backgroundColor) > 0 && alpha(cs.backgroundColor) < 1);
+          if (!ok) return null;
+          var pr = prev.getBoundingClientRect();
+          if (pr.width >= r.width * 0.98 && pr.height >= r.height * 0.98) return null;
+          return prev;
+        }
+        return NAME.test(nm(el)) && !SKIP.test(nm(el)) ? el : null;
+      }
+      prev = el;
+      el = el.parentElement;
+    }
+    return null;
+  }
+
+  function isHandle(p, cx, cy, t) {
+    if (t.closest(INTER)) return false;
+    var r = p.getBoundingClientRect(), y = cy - r.top;
+    if (cx < r.left || cx > r.right || y < 0 || y > r.height) return false;
+    if (y <= 64) return true;
+    return y <= 120 && !!t.closest('h1,h2,h3,h4,h5,header');
+  }
+
+  function tr(p) {
+    var m = /(-?[\d.]+)px\s+(-?[\d.]+)px/.exec(p.style.translate || '');
+    return m ? [parseFloat(m[1]), parseFloat(m[2])] : [0, 0];
+  }
+
+  function start(cx, cy, t) {
+    var p = findPanel(t);
+    if (!p || !isHandle(p, cx, cy, t)) return null;
+    var o = tr(p);
+    return { p: p, sx: cx, sy: cy, ox: o[0], oy: o[1], r: p.getBoundingClientRect(), moved: false };
+  }
+
+  function move(cx, cy) {
+    var d = drag, dx = cx - d.sx, dy = cy - d.sy;
+    if (!d.moved && Math.abs(dx) + Math.abs(dy) < 4) return;
+    if (!d.moved) {
+      d.moved = true;
+      document.documentElement.classList.add('pd-drag');
+      if (moved.indexOf(d.p) < 0) moved.push(d.p);
+    }
+    dx = Math.max(40 - d.r.right, Math.min(innerWidth - 40 - d.r.left, dx));
+    dy = Math.max(-d.r.top, Math.min(innerHeight - 40 - d.r.top, dy));
+    d.p.style.translate = (d.ox + dx) + 'px ' + (d.oy + dy) + 'px';
+  }
+
+  function end() {
+    if (!drag) return;
+    if (drag.moved) lastDrag = Date.now();
+    drag = null;
+    document.documentElement.classList.remove('pd-drag');
+  }
+
+  window.addEventListener('mousedown', function (e) {
+    if (e.button !== 0) return;
+    var d = start(e.clientX, e.clientY, e.target);
+    if (d) { drag = d; e.preventDefault(); }
+  }, true);
+  window.addEventListener('mousemove', function (e) {
+    if (drag) { move(e.clientX, e.clientY); return; }
+    var n = Date.now();
+    if (n - lastMove < 80) return;
+    lastMove = n;
+    var p = findPanel(e.target);
+    document.documentElement.classList.toggle('pd-can', !!(p && isHandle(p, e.clientX, e.clientY, e.target)));
+  }, true);
+  window.addEventListener('mouseup', end, true);
+  window.addEventListener('click', function (e) {
+    if (lastDrag && Date.now() - lastDrag < 350) { lastDrag = 0; e.stopPropagation(); e.preventDefault(); }
+  }, true);
+
+  window.addEventListener('touchstart', function (e) {
+    if (e.touches.length !== 1) return;
+    var t = e.touches[0], d = start(t.clientX, t.clientY, e.target);
+    if (d) { drag = d; e.preventDefault(); }
+  }, { capture: true, passive: false });
+  window.addEventListener('touchmove', function (e) {
+    if (!drag) return;
+    e.preventDefault();
+    move(e.touches[0].clientX, e.touches[0].clientY);
+  }, { capture: true, passive: false });
+  window.addEventListener('touchend', end, true);
+  window.addEventListener('touchcancel', end, true);
+
+  /* 팝업이 닫히면 위치 초기화 */
+  new MutationObserver(function () {
+    if (!moved.length) return;
+    moved = moved.filter(function (p) {
+      if (p.getClientRects().length) return true;
+      p.style.translate = '';
+      return false;
+    });
+  }).observe(document.documentElement, {
+    attributes: true, subtree: true, childList: true,
+    attributeFilter: ['class', 'style', 'open', 'hidden']
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+{
+ "updated": "2026-11-15",
+ "title": "Home Sweet Home",
+ "sections": [
+  {
+   "title": "자주 가는 곳 (예시)",
+   "pin": false,
+   "groups": [
+    {
+     "title": "포털·검색",
+     "pin": false,
+     "links": [
+      {
+       "label": "네이버",
+       "url": "https://www.naver.com",
+       "tags": [
+        "포털",
+        "검색"
+       ],
+       "pin": true,
+       "size": "L"
+      },
+      {
+       "label": "구글",
+       "url": "https://www.google.com",
+       "tags": [
+        "검색"
+       ],
+       "pin": false,
+       "size": "L"
+      },
+      {
+       "label": "다음",
+       "url": "https://www.daum.net",
+       "tags": [
+        "포털"
+       ],
+       "pin": false,
+       "size": "M"
+      }
+     ]
+    },
+    {
+     "title": "내 페이지",
+     "pin": false,
+     "links": [
+      {
+       "label": "KMS",
+       "url": "https://yangji-madang.github.io/SLGFC/kms_gate.html",
+       "tags": [
+        "kms",
+        "상담",
+        "법령"
+       ],
+       "pin": true,
+       "size": "L"
+      },
+      {
+       "label": "ADMIN PORTAL",
+       "url": "https://yangji-madang.github.io/portal/portal.html",
+       "tags": [
+        "관리",
+        "포털"
+       ],
+       "pin": false,
+       "size": "M"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}
