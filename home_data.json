@@ -75,7 +75,7 @@
  },
  "sections": [
   {
-   "title": "양지마당 유튜브",
+   "title": "Youtube : 양지마당",
    "pin": false,
    "groups": [
     {
@@ -147,20 +147,9 @@
    ]
   },
   {
-   "title": "볼만한 사이트",
+   "title": "유익한 사이트",
    "pin": false,
-   "groups": [
-    {
-     "title": "생활상식",
-     "pin": false,
-     "links": []
-    },
-    {
-     "title": "경제",
-     "pin": false,
-     "links": []
-    }
-   ]
+   "groups": []
   }
  ]
 }
