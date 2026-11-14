@@ -75,11 +75,11 @@
  },
  "sections": [
   {
-   "title": "자주 가는 곳 (예시)",
+   "title": "양지마당 유튜브",
    "pin": false,
    "groups": [
     {
-     "title": "포털·검색",
+     "title": "Family",
      "pin": false,
      "links": [
       {
@@ -116,7 +116,7 @@
      ]
     },
     {
-     "title": "내 페이지",
+     "title": "Life",
      "pin": false,
      "links": [
       {
@@ -143,6 +143,22 @@
        "fmt": null
       }
      ]
+    }
+   ]
+  },
+  {
+   "title": "볼만한 사이트",
+   "pin": false,
+   "groups": [
+    {
+     "title": "생활상식",
+     "pin": false,
+     "links": []
+    },
+    {
+     "title": "경제",
+     "pin": false,
+     "links": []
     }
    ]
   }
