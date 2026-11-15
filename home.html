@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Nanum+Myeongjo:wght@400;700;800&family=Jua&family=Gamja+Flower&display=swap" rel="stylesheet">
 <style>
-  :root{ --text:#10243a; }
+  :root{ --text:#10243a; --maxw:600px; }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
   body{
@@ -24,9 +24,9 @@
 
   .page{ position:relative; z-index:1; display:flex; flex-direction:column; min-height:100vh; min-height:100dvh;
          width:100%; margin:0 auto; padding:18px 14px 12px; }
-  .top{ align-self:center; width:100%; max-width:820px; display:flex; justify-content:center; }
+  .top{ align-self:center; width:100%; max-width:var(--maxw); margin:0 auto; display:block; }
 
-  main{ display:grid; grid-template-columns:fit-content(100%); justify-content:center; row-gap:7px; max-width:100%; min-width:min(100%,360px); }
+  main{ display:grid; grid-template-columns:100%; row-gap:7px; width:100%; max-width:var(--maxw); min-width:0; margin:0 auto; }
 
   /* 제목: 검색영역 위 가운데 */
   .ttl{ margin:0 0 4px; padding:0 6px; text-align:center; line-height:1.15; word-break:keep-all;
@@ -107,16 +107,14 @@
   }
 
   /* 하단: 안내문(왼쪽) · 저작권(항상 오른쪽 아래) */
-  .foot{ margin-top:auto; padding-top:16px; display:flex; flex-wrap:wrap; gap:2px 14px; align-items:flex-end; justify-content:space-between; }
+  .foot{ width:100%; max-width:var(--maxw); margin-left:auto; margin-right:auto; margin-top:auto; padding-top:16px; display:flex; flex-wrap:wrap; gap:2px 14px; align-items:flex-end; justify-content:space-between; }
   .foot .notice{ margin:0; text-shadow:0 1px 3px rgba(0,0,0,0.70); word-break:keep-all; flex:1 1 280px; }
   .foot .copyright{ margin:0; text-shadow:0 1px 3px rgba(0,0,0,0.70); text-align:right; margin-left:auto; white-space:nowrap; }
 
   /* 화면 폭에 맞춰 늘어남: 폰·태블릿(900px 이하)은 기기 폭을 가득 채움 (고정 폭 없음) */
   html{ -webkit-text-size-adjust:100%; text-size-adjust:100%; }
-  @media (max-width:900px){
+  @media (max-width:600px){
     .page{ padding:8px 5px 10px; }
-    .top{ max-width:none; display:block; }
-    main{ grid-template-columns:100%; min-width:0; width:100% !important; max-width:100%; justify-content:stretch; }
     .search .pick{ gap:4px 6px; }
     .search label{ flex:1 1 40%; }
     .search select{ flex:1; max-width:none; min-width:0; }
@@ -426,7 +424,7 @@ function start(raw){
   fillS2();
   apply();
   /* 검색해도 화면 폭이 출렁이지 않도록, 처음 모든 항목이 보일 때의 폭을 고정 */
-  function lockWidth(){ root.style.width = ""; if (window.innerWidth <= 900) return; root.style.width = root.offsetWidth + "px"; }
+  function lockWidth(){ root.style.width = ""; }  /* 폭은 CSS(--maxw)가 정함: 화면이 커져도 더 넓어지지 않음 */
   lockWidth();
   if (!wired) { wired = true; window.addEventListener("resize", lockWidth); }
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(lockWidth);
